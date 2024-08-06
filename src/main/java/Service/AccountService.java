@@ -1,9 +1,6 @@
 package Service;
 
-import java.util.List;
-
 import DAO.AccountDao;
-import Model.Account;
 
 public class AccountService {
     private AccountDao accountDao;
