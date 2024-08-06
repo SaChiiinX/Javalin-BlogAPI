@@ -48,15 +48,16 @@ public class MessageService {
         return this.messageDao.getAllMessages(user);
     }
 
-    public Message deleteMessage(int id){
-        return this.messageDao.removeMessage();
+    public void deleteMessage(int id){
+        this.messageDao.removeMessage(id);
     }
 
-    public Message updateMessage(int id, String newText){
-        if(getMessage(id) == null || newText.isBlank() || newText.length() > 255){
+    public Message updateMessage(int id, Message message){
+        if(getMessage(id) == null || message.message_text.isBlank() || message.message_text.length() > 255){
             return null;
         }
-
-        return this.messageDao.updateMessage(id, newText);
+        this.messageDao.updateMessage(id, message);
+        message.setMessage_id(id);
+        return message;
     }
 }
