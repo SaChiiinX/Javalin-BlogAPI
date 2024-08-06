@@ -30,7 +30,7 @@ public class MessageService {
 
 
     public Message createMessage(Message message){
-        if(message.message_text.isBlank() || message.message_text.length() > 255 || !accountService.isUserValid(message.posted_by)){
+        if(message.message_text.isBlank() || message.message_text.length() > 255 || !accountService.isUser(message.posted_by)){
             return null;
         }
         return this.messageDao.addMessage(message);
