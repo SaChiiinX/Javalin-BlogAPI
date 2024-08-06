@@ -18,11 +18,11 @@ public class AccountService {
         if(account.username.isBlank() || account.password.length() < 4 || this.accountDao.isUser(account.username)){
             return null;
         }
-        return this.accountDao.registerUser(account.username);
+        return this.accountDao.registerUser(account);
     }
 
-    public Account verifyAccountDetails(String username, String password){
-        return this.accountDao.verifyAccountDetails(username, password);
+    public Account verifyAccountDetails(Account account){
+        return this.accountDao.verifyAccountDetails(account);
     }
 
     public boolean isUser(String username){
@@ -32,9 +32,4 @@ public class AccountService {
     public boolean isUser(int posted_by) {
         return this.accountDao.isUser(posted_by);
     }
-
-
-    
-
-
 }   
