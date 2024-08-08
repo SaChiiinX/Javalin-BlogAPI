@@ -1,9 +1,6 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +13,7 @@ public class MessageDao {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "insert into message (posted_by, message_text, time_posted_epoch) values (?,?,?)";
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, message.posted_by);
             ps.setString(2, message.message_text);
             ps.setLong(3, message.time_posted_epoch);
@@ -70,13 +67,13 @@ public class MessageDao {
         return messages;
     }
 
-    public List<Message> getAllMessages(int user) {
+    public List<Message> getAllMessages(int account_id) {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
         try {
             String sql = "select * from message where posted_by = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, user);
+            ps.setInt(1, account_id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 messages.add(new Message(rs.getInt("message_id"), 
@@ -90,26 +87,24 @@ public class MessageDao {
         return messages;
     }
 
-    public void removeMessage(int id) {
+    public void removeMessage(int message_id) {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "delete from message where message_id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, id);
+            ps.setInt(1, message_id);
             ps.executeUpdate();
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
     }
 
-    public void updateMessage(int id, Message message) {
+    public void updateMessage(int message_id, Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "update message set message_text = ?, time_posted_epoch = ? where message_id = ?";
+            String sql = "update message set message_text = ? where message_id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, message.message_text);
-            ps.setLong(2, System.currentTimeMillis()/1000);
-            ps.setInt(3, id);
             ps.executeUpdate();
         }catch(SQLException e){
             System.out.println(e.getMessage());

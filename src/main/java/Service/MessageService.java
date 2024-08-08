@@ -16,6 +16,7 @@ public class MessageService {
 
     public MessageService(AccountService accountService){
         this.messageDao = new MessageDao();
+        this.accountService = accountService;
     }
 
     public MessageService(MessageDao messageDao){
@@ -36,28 +37,35 @@ public class MessageService {
         return this.messageDao.addMessage(message);
     }
 
-    public Message getMessage(int id){
-        return this.messageDao.getMessage(id);
+    public Message getMessage(int message_id){
+        return this.messageDao.getMessage(message_id);
     }
 
     public List<Message> getAllMessages(){
         return this.messageDao.getAllMessages();
     }
 
-    public List<Message> getAllMessages(int user){
-        return this.messageDao.getAllMessages(user);
+    public List<Message> getAllMessages(int account_id){
+        return this.messageDao.getAllMessages(account_id);
     }
 
-    public void deleteMessage(int id){
-        this.messageDao.removeMessage(id);
-    }
+    public Message deleteMessage(int message_id){
+        Message message = this.messageDao.getMessage(message_id);
+        if(message != null){
+            this.messageDao.removeMessage(message_id);
+            return message;
+        }
+        
+        return null;
+    }   
 
-    public Message updateMessage(int id, Message message){
-        if(getMessage(id) == null || message.message_text.isBlank() || message.message_text.length() > 255){
+    public Message updateMessage(int message_id, Message message){
+        Message old = getMessage(message_id);
+        if(old == null || message.message_text.isBlank() || message.message_text.length() > 255){
             return null;
         }
-        this.messageDao.updateMessage(id, message);
-        message.setMessage_id(id);
-        return message;
+        this.messageDao.updateMessage(message_id, message);
+        old.setMessage_text(message.message_text);
+        return old;
     }
 }

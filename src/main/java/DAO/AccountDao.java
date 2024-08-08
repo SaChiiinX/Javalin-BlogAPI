@@ -1,9 +1,6 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import Model.Account;
 import Util.ConnectionUtil;
@@ -14,14 +11,14 @@ public class AccountDao {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "select * from account where username = ? and password = ?";
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, account.username);
             ps.setString(2, account.password);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 return new Account(rs.getInt("account_id"),
-                                   rs.getString("message_id"), 
-                                   rs.getString("posted_by"));
+                                   rs.getString("username"), 
+                                   rs.getString("password"));
             }
         }catch(SQLException e){
             System.out.println(e.getMessage());
@@ -32,8 +29,8 @@ public class AccountDao {
     public Account registerUser(Account account) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "insert into account (username, password) values (?,?)";
-            PreparedStatement ps = connection.prepareStatement(sql);
+            String sql = "insert into account (username, password) values (?, ?)";
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, account.username);
             ps.setString(2, account.password);
             ps.executeUpdate();
@@ -52,7 +49,7 @@ public class AccountDao {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "select * from account where username = ?";
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
@@ -68,7 +65,7 @@ public class AccountDao {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "select * from account where account_id = ?";
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, posted_by);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
