@@ -7,8 +7,16 @@ import java.util.List;
 import Model.Message;
 import Util.ConnectionUtil;
 
+/**
+ * Data Access Object (DAO) for managing messages in the database.
+ */
 public class MessageDao {
 
+    /**
+     * Adds a new message to the database.
+     * @param message The Message object containing the message details to be added.
+     * @return The newly created Message object with the generated ID, or null if the insertion failed.
+     */
     public Message addMessage(Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -29,6 +37,11 @@ public class MessageDao {
         return null;
     }
 
+    /**
+     * Retrieves a message from the database by its ID.
+     * @param id The ID of the message to retrieve.
+     * @return The Message object with the specified ID, or null if not found.
+     */
     public Message getMessage(int id) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -48,6 +61,10 @@ public class MessageDao {
         return null;
     }
 
+    /**
+     * Retrieves all messages from the database.
+     * @return A list of all Message objects in the database.
+     */
     public List<Message> getAllMessages() {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
@@ -67,6 +84,11 @@ public class MessageDao {
         return messages;
     }
 
+    /**
+     * Retrieves all messages posted by a specific account from the database.
+     * @param account_id The ID of the account whose messages to retrieve.
+     * @return A list of Message objects for the specified account.
+     */
     public List<Message> getAllMessages(int account_id) {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
@@ -87,6 +109,10 @@ public class MessageDao {
         return messages;
     }
 
+    /**
+     * Removes a message from the database by its ID.
+     * @param message_id The ID of the message to delete.
+     */
     public void removeMessage(int message_id) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -99,12 +125,18 @@ public class MessageDao {
         }
     }
 
+    /**
+     * Updates the text of an existing message by its ID.
+     * @param message_id The ID of the message to update.
+     * @param message The Message object containing the new message text.
+     */
     public void updateMessage(int message_id, Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "update message set message_text = ? where message_id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, message.message_text);
+            ps.setInt(2, message_id);
             ps.executeUpdate();
         }catch(SQLException e){
             System.out.println(e.getMessage());
